@@ -1,5 +1,4 @@
-import {combineReducers} from 'redux';
-import {createStore} from 'redux';
+import {createStore, combineReducers, applyMiddleware} from 'redux';
 
 
 const mathReducer = (state= {
@@ -49,6 +48,12 @@ const userReducer = (state= {
     return state;
 }
 
+
+const myLogger = (store) => (next) => (action) => {
+    console.log("Log action", action);
+    next(action);
+};
+
 const allReducers = combineReducers({
     mathReducer,
     userReducer
@@ -56,7 +61,7 @@ const allReducers = combineReducers({
 
 
 
-const store = createStore(allReducers, 1);
+const store = createStore(allReducers, {}, applyMiddleware(myLogger));
 
 store.subscribe(() => {
     console.log("STORE updated", store.getState());
